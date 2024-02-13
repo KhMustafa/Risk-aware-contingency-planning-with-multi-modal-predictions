@@ -1,0 +1,14 @@
+{
+    "mode": "risk",
+    "frenet_parameters": {
+      "t_list": [1.0],
+      "v_list_generation_mode": "linspace",
+      "n_v_samples": 5,
+      "d_list": {
+        "d_max_abs": 2.0,
+        "n": 3
+      },
+      "dt": 0.1,
+      "v_thr": 3.0
+    }
+}
