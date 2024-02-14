@@ -20,12 +20,10 @@ import matplotlib
 from commonroad.planning.planning_problem import PlanningProblem
 from commonroad.scenario.scenario import Scenario
 from commonroad.scenario.trajectory import State
-from commonroad_dc.boundary import boundary
 from commonroad_dc.collision.collision_detection.pycrcc_collision_dispatch import (
     create_collision_checker,
 )
 
-from commonroad_helper_functions.sensor_model import get_visible_objects
 from commonroad_helper_functions.exceptions import (
     ExecutionTimeoutError,
 )
@@ -35,7 +33,7 @@ from MPC_branch import BranchMPC
 from highway_branch_dyn import *
 import Highway_env_branch
 
-from utils_baseline import Branch_constants, MPCParams
+from utils_baseline import Branch_constants
 
 # Custom imports
 warnings.filterwarnings("ignore", category=np.VisibleDeprecationWarning)
@@ -49,12 +47,7 @@ from beliefplanning.planner.planning import Planner
 from beliefplanning.planner.utils.timeout import Timeout
 from beliefplanning.planner.Frenet.utils.visualization import draw_frenet_trajectories, \
     draw_contingent_trajectories, draw_all_contingent_trajectories
-from beliefplanning.planner.Frenet.utils.validity_checks import (
-    VALIDITY_LEVELS,
-)
-from beliefplanning.planner.Frenet.utils.helper_functions import (
-    get_goal_area_shape_group,
-)
+
 from beliefplanning.planner.Frenet.utils.prediction_helpers import (
     add_static_obstacle_to_prediction,
     get_dyn_and_stat_obstacles,
@@ -79,7 +72,6 @@ from beliefplanning.planner.Frenet.utils.frenet_functions import (
     sort_frenet_trajectories,
 )
 from beliefplanning.planner.Frenet.utils.logging import FrenetLogging
-from beliefplanning.planner.utils.responsibility import assign_responsibility_by_action_space
 from beliefplanning.planner.utils import reachable_set
 from beliefplanning.risk_assessment.visualization.risk_visualization import (
     create_risk_files,
