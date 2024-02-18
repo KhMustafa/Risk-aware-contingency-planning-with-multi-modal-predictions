@@ -9,7 +9,7 @@ other road users to construct a novel risk-aware probabilistic motion planning f
 The software has been tested on the following setup:
 * Ubuntu 20.04.
 * Python 3.8.
-* Other requirements are specified in the requirements.txt.
+* The required python dependencies are specified in the requirements.txt.
 
 Please note that it is recommended to create an isolated virtual environment where the required Python packages can be installed.
 
@@ -19,7 +19,7 @@ To run this code, please follow this set of instructions:
 ```
 $ git clone https://github.com/KhMustafa/Risk-aware-contingency-planning-with-multi-modal-predictions.git
 ```
-* Navigate to the root folder of the repository and install the required Python packages
+* Navigate to the root folder of the repository and install the dependencies
 ```
 pip install -r requirements.txt
 ```
