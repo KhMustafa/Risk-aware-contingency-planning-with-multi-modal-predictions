@@ -46,7 +46,7 @@ sys.path.append(mopl_path)
 from beliefplanning.planner.planning import Planner
 from beliefplanning.planner.utils.timeout import Timeout
 from beliefplanning.planner.Frenet.utils.visualization import draw_frenet_trajectories, \
-    draw_contingent_trajectories, draw_all_contingent_trajectories
+    draw_contingent_trajectories, draw_all_contingent_trajectories, draw_all_plans
 
 from beliefplanning.planner.Frenet.utils.prediction_helpers import (
     add_static_obstacle_to_prediction,
@@ -340,7 +340,7 @@ class FrenetPlanner(Planner):
 
         with self.exec_timer.time_with_cm("simulation/calculate trajectories/total"):
             # d_list = self.frenet_parameters["d_list"]
-            d_list = np.linspace(-3.6, 0, 5)
+            d_list = np.linspace(-3.6, 0, 10)
             t_list = self.frenet_parameters["t_list"]
 
             # if self.ego_state.time_step == 0 or self.open_loop is False:
@@ -426,14 +426,15 @@ class FrenetPlanner(Planner):
                 t_max = max(self.contingency_parameters["t_list"])
 
                 # d_list = self.contingency_parameters["d_list"]
-                d_list = np.linspace(-3.6, 0, 3)
+                d_list = np.linspace(-3.6, 0, 6)
                 t_list = self.contingency_parameters["t_list"]
 
                 ft_final_list = []
+                ft_all_plans_list = []
 
                 for plan in ft_list_valid:
                     final_plan = {}
-
+                    ft_all_plans = {}
                     max_v = min(
                         plan.v[-1] + (max_acceleration / 2.0) * t_max, self.p.longitudinal.v_max
                     )
@@ -451,6 +452,7 @@ class FrenetPlanner(Planner):
                     )
 
                     final_plan['shared_plan'] = plan
+                    ft_all_plans['shared_plan'] = plan
 
                     if t_list[0] != 0:
                         # only calculate contingent plans when needed
@@ -478,6 +480,11 @@ class FrenetPlanner(Planner):
                             n_samples=self.contingency_parameters["n_v_samples"],
                             contin=True
                         )
+
+                        for index in range(len(ft_contingent_list)):
+                            ft_all_plans[index] = ft_contingent_list[index]
+
+                        ft_all_plans_list.append(ft_all_plans)
 
                         # we want to calculate the best contingent plan per mode
                         for mode_num in range(len(predictions[1]['pos_list'])):
@@ -595,7 +602,7 @@ class FrenetPlanner(Planner):
                                                      self.state_rec, self.zPred_rec)
 
             try:
-
+                '''
                 draw_all_contingent_trajectories(
                     scenario=self.scenario,
                     time_step=self.ego_state.time_step,
@@ -610,6 +617,24 @@ class FrenetPlanner(Planner):
                     visible_area=visible_area,
                     valid_traj=ft_final_list,
                     best_traj=self.contingency_trajectory,
+                    open_loop=self.open_loop,
+                )
+                '''
+
+                draw_all_plans(
+                    scenario=self.scenario,
+                    time_step=self.ego_state.time_step,
+                    marked_vehicle=self.ego_id,
+                    planning_problem=self.planning_problem,
+                    traj=None,
+                    global_path=self.global_path_to_goal,
+                    global_path_after_goal=self.global_path_after_goal,
+                    driven_traj=self.driven_traj,
+                    animation_area=50.0,
+                    predictions=predictions,
+                    visible_area=visible_area,
+                    valid_traj=ft_all_plans_list,
+                    best_traj=ft_final_list,
                     open_loop=self.open_loop,
                 )
 

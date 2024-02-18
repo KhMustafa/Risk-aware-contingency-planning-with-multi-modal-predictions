@@ -434,7 +434,8 @@ def draw_contingent_trajectories(
 
         # align ego position to the center
         ax.set_xlim(
-            valid_traj[0]['shared_plan'].x[0] - animation_area / 6, valid_traj[0]['shared_plan'].x[0] + animation_area - 15
+            valid_traj[0]['shared_plan'].x[0] - animation_area / 6,
+            valid_traj[0]['shared_plan'].x[0] + animation_area - 15
         )
         '''
         ax.set_ylim(
@@ -446,13 +447,11 @@ def draw_contingent_trajectories(
             -10.8, 3.6
         )
 
-
     # best trajectory
     if len(valid_traj) > 0:
         best_shared_trajectory = valid_traj[0]['shared_plan']
     else:
         best_shared_trajectory = best_traj[1]['shared_plan']
-
 
     # if time_step == 0 or open_loop is False:
     # if open_loop is True:
@@ -529,6 +528,148 @@ def draw_contingent_trajectories(
     plt.pause(0.000001)
 
 
+def draw_all_plans(
+        scenario,
+        time_step: int,
+        marked_vehicle: [int] = None,
+        planning_problem=None,
+        traj=None,
+        predictions: dict = None,
+        visible_area=None,
+        animation_area: float = 40.0,
+        global_path: np.ndarray = None,
+        global_path_after_goal: np.ndarray = None,
+        driven_traj=None,
+        ax=None,
+        picker=False,
+        show_label=False,
+        live=True,
+        valid_traj=None,
+        best_traj=None,
+        open_loop=False,
+):
+    if live:
+        ax = draw_scenario(
+            scenario,
+            time_step,
+            marked_vehicle,
+            planning_problem,
+            traj,
+            visible_area,
+            animation_area,
+            global_path,
+            global_path_after_goal,
+            driven_traj,
+            ax,
+            picker,
+            show_label,
+        )
+
+    # Draw all possible trajectories with their costs as colors
+    if valid_traj is not None and len(valid_traj) != 0:
+        # x and y axis description
+        ax.set_xlabel("x[m]")
+        ax.set_ylabel("y[m]")
+
+        # align ego position to the center
+        ax.set_xlim(
+            valid_traj[0]['shared_plan'].x[0] - animation_area / 6,
+            valid_traj[0]['shared_plan'].x[0] + animation_area - 15
+        )
+
+        ax.set_ylim(
+            -10.8, 3.6
+        )
+
+    # best trajectory
+    if len(valid_traj) > 0:
+        best_shared_trajectory = valid_traj[0]['shared_plan']
+    else:
+        best_shared_trajectory = best_traj[1]['shared_plan']
+
+    colorset = ['tab:blue', 'tab:orange', 'tab:green', 'tab:red', 'tab:purple', 'tab:brown', 'tab:pink', 'tab:gray',
+                'tab:olive', 'tab:cyan', 'y', 'm', 'c', 'g']
+
+    colorset = ['tab:pink', 'tab:blue', 'tab:purple', 'tab:olive', 'm', 'tab:cyan']
+    j = 0
+    for p in reversed(valid_traj):
+        ax.plot(p['shared_plan'].x, -p['shared_plan'].y, alpha=0.02, color='k', zorder=25, picker=picker)
+        j = j + 1
+        if j == len(colorset):
+            j = 0
+
+    for i in range(len(valid_traj)):
+        keys_list = list(valid_traj[i])
+        j = 1
+        for key in keys_list[1:-1]:
+            if abs(valid_traj[i][key].d[-1] + 3.6) < 0.1:
+                j = 0
+            elif abs(valid_traj[i][key].d[-1] + 2.88) < 0.1:
+                j = 1
+            elif abs(valid_traj[i][key].d[-1] + 2.16) < 0.1:
+                j = 2
+            elif abs(valid_traj[i][key].d[-1] + 1.44) < 0.1:
+                j = 3
+            elif abs(valid_traj[i][key].d[-1] + 0.72) < 0.1:
+                j = 4
+            elif abs(valid_traj[i][key].d[-1]) < 0.1:
+                j = 5
+
+            ax.plot(
+                valid_traj[i][key].x,
+                -valid_traj[i][key].y,
+                alpha=0.02,
+                color=colorset[j],
+                zorder=25,
+                label="Best trajectory",
+                picker=picker,
+            )
+            j += 1
+            if j == len(colorset):
+                j = 0
+
+    # plot best trajectory
+    ax.plot(best_traj[0]['shared_plan'].x, -best_traj[0]['shared_plan'].y, alpha=1.0, linewidth=3.0, color='tab:blue',
+            zorder=25, picker=picker)
+    keys_list = list(best_traj[0])
+    for key in keys_list[1:-1]:
+        ax.plot(
+            best_traj[0][key].x,
+            -best_traj[0][key].y,
+            alpha=1.0,
+            color='tab:blue',
+            linewidth=1.5,
+            zorder=25,
+            label="Best trajectory",
+            picker=picker,
+        )
+        j += 1
+
+    # draw predictions
+    prediction_plot_list = list(predictions.values())[:10]
+    fut_pos_list = [
+        prediction_plot_list[i]["pos_list"][:20][:]
+        for i in range(len(prediction_plot_list))
+    ]
+
+    for i in range(len(fut_pos_list[0])):
+        ax.plot(fut_pos_list[0][i][:, 0], -fut_pos_list[0][i][:, 1], alpha=0.5,
+                color='tab:gray',
+                lw=0.5,
+                zorder=25,
+                marker='o',
+                markersize=2,
+                picker=picker, )
+    '''
+    if predictions is not None:
+        draw_uncertain_predictions(predictions, ax)
+    '''
+    # show the figure until the next one ins ready
+    # plt.savefig(str(i).zfill(4) + ".png")
+    # i += 1
+    plt.pause(0.000001)
+
+
 def draw_all_contingent_trajectories(
         scenario,
         time_step: int,
@@ -574,7 +715,8 @@ def draw_all_contingent_trajectories(
 
         # align ego position to the center
         ax.set_xlim(
-            valid_traj[0]['shared_plan'].x[0] - animation_area / 6, valid_traj[0]['shared_plan'].x[0] + animation_area - 15
+            valid_traj[0]['shared_plan'].x[0] - animation_area / 6,
+            valid_traj[0]['shared_plan'].x[0] + animation_area - 15
         )
 
         ax.set_ylim(
@@ -589,7 +731,6 @@ def draw_all_contingent_trajectories(
         )
         mapper = cm.ScalarMappable(norm=norm, cmap=green_to_red_colormap())
 
-
     # best trajectory
     if len(valid_traj) > 0:
         best_shared_trajectory = valid_traj[0]['shared_plan']
@@ -601,7 +742,7 @@ def draw_all_contingent_trajectories(
     j = 0
     for p in reversed(valid_traj):
         color = mapper.to_rgba(p['cost'])
-        ax.plot(p['shared_plan'].x, -p['shared_plan'].y, alpha=1.0, color=colorset[j], zorder=25, picker=picker)
+        ax.plot(p['shared_plan'].x, -p['shared_plan'].y, alpha=0.15, color=colorset[j], zorder=25, picker=picker)
         j = j + 1
         if j == len(colorset):
             j = 0
@@ -613,35 +754,31 @@ def draw_all_contingent_trajectories(
             ax.plot(
                 valid_traj[i][key].x,
                 -valid_traj[i][key].y,
-                alpha=1.0,
+                alpha=0.15,
                 color=colorset[j],
                 zorder=25,
                 label="Best trajectory",
                 picker=picker,
             )
             j += 1
-    '''
-    ax.plot(
-        best_traj_mode_2.x,
-        best_traj_mode_2.y,
-        alpha=1.0,
-        color="yellow",
-        zorder=25,
-        lw=3.0,
-        label="Best trajectory",
-        picker=picker,
-    )
-    ax.plot(
-        best_traj_mode_1.x,
-        best_traj_mode_1.y,
-        alpha=1.0,
-        color="blue",
-        zorder=25,
-        lw=3.0,
-        label="Best trajectory",
-        picker=picker,
-    )
-    '''
+
+    # plot best trajectory
+    ax.plot(valid_traj[0]['shared_plan'].x, -valid_traj[0]['shared_plan'].y, alpha=1.0, linewidth=3.0, color='tab:blue',
+            zorder=25, picker=picker)
+    keys_list = list(valid_traj[0])
+    for key in keys_list[1:-1]:
+        ax.plot(
+            valid_traj[0][key].x,
+            -valid_traj[0][key].y,
+            alpha=1.0,
+            color='tab:blue',
+            linewidth=1.5,
+            zorder=25,
+            label="Best trajectory",
+            picker=picker,
+        )
+        j += 1
+
     # draw predictions
     prediction_plot_list = list(predictions.values())[:10]
     fut_pos_list = [
@@ -665,6 +802,7 @@ def draw_all_contingent_trajectories(
     # plt.savefig(str(i).zfill(4) + ".png")
     # i += 1
     plt.pause(0.000001)
+
 
 def draw_frenet_trajectories(
         scenario,
@@ -1000,9 +1138,9 @@ def draw_scenario(
         draw_params={
             "time_begin": time_step,
             "dynamic_obstacle": {
-                "draw_shape": False,
+                "draw_shape": True,
                 "draw_bounding_box": False,
-                "draw_icon": True,
+                "draw_icon": False,
                 "show_label": show_label,
             },
         },
@@ -1024,7 +1162,7 @@ def draw_scenario(
                 "dynamic_obstacle": {
                     "draw_shape": False,
                     "draw_bounding_box": False,
-                    "draw_icon": False,
+                    "draw_icon": True,
                 },
             },
         )
