@@ -2,7 +2,7 @@
 
 
 ## General Info
-This repository includes the source code associated with the paper "RACP: Risk-Aware Contingency Planning with Multi-Modal Predictions". The paper presents an approach that leverages Bayesian beliefs over the distribution of potential policies of
+This repository includes the source code associated with the [paper](https://arxiv.org/abs/2402.17387) "RACP: Risk-Aware Contingency Planning with Multi-Modal Predictions". The paper presents an approach that leverages Bayesian beliefs over the distribution of potential policies of
 other road users to construct a novel risk-aware probabilistic motion planning framework. In particular, we propose a novel contingency planner that outputs long-term contingent plans conditioned on multiple possible intents for other actors in the traffic scene. The Bayesian belief is incorporated into the optimization cost function to influence the behavior of the short-term plan based on the likelihood of other agents’ policies. Furthermore, a probabilistic risk metric is employed to fine-tune the balance between efficiency and robustness. The algorithm is designed to work seamlessly with the [CommonRoad](https://commonroad.in.tum.de/) simulation environment and adopts the Frenet planner base code from [this repository](https://github.com/TUMFTM/EthicalTrajectoryPlanning/tree/master).
 
 ## Requirements
