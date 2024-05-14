@@ -646,7 +646,7 @@ class FrenetPlanner(Planner):
 
             # best trajectory
             if len(ft_list_valid) > 0:
-                best_trajectory = ft_list_valid[0]
+                best_trajectory = ft_final_list[0]
             elif len(ft_list_invalid) > 0:
                 best_trajectory = ft_list_invalid[0]
                 # raise NoLocalTrajectoryFoundError('Failed. No valid frenét path found')
@@ -656,17 +656,17 @@ class FrenetPlanner(Planner):
         # this should work fine, we don't need the entire trajectory since only the 2nd index is required
         # to update the initial state.
         self._trajectory = {
-            "s_loc_m": best_trajectory.s,
-            "d_loc_m": best_trajectory.d,
-            "d_d_loc_mps": best_trajectory.d_d,
-            "d_dd_loc_mps2": best_trajectory.d_dd,
-            "x_m": best_trajectory.x,
-            "y_m": best_trajectory.y,
-            "psi_rad": best_trajectory.yaw,
-            "kappa_radpm": best_trajectory.curv,
-            "v_mps": best_trajectory.s_d,
-            "ax_mps2": best_trajectory.s_dd,
-            "time_s": best_trajectory.t,
+            "s_loc_m": best_trajectory['shared_plan'].s,
+            "d_loc_m": best_trajectory['shared_plan'].d,
+            "d_d_loc_mps": best_trajectory['shared_plan'].d_d,
+            "d_dd_loc_mps2": best_trajectory['shared_plan'].d_dd,
+            "x_m": best_trajectory['shared_plan'].x,
+            "y_m": best_trajectory['shared_plan'].y,
+            "psi_rad": best_trajectory['shared_plan'].yaw,
+            "kappa_radpm": best_trajectory['shared_plan'].curv,
+            "v_mps": best_trajectory['shared_plan'].s_d,
+            "ax_mps2": best_trajectory['shared_plan'].s_dd,
+            "time_s": best_trajectory['shared_plan'].t,
         }
         return ft_final_list[0], state_rec, zPred, self.obst_new_state
 
