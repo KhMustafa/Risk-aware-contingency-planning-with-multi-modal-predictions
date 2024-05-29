@@ -25,7 +25,7 @@ pip install -r requirements.txt
 ```
 
 ## Usage
-* To run the contingency planner, execute the following command from the root directory
+To run the contingency planner, execute the following command from the root directory
 ```
 python planner/Frenet/frenet_planner.py
 ```
