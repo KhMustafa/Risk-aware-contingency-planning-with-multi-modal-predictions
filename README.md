@@ -9,7 +9,7 @@ other road users to construct a novel risk-aware probabilistic motion planning f
 The software has been tested on the following setup:
 * Ubuntu 20.04.
 * Python 3.8.
-* The required python dependencies are specified in the requirements.txt.
+* The required Python dependencies are specified in the requirements.txt.
 
 Please note that it is recommended to create an isolated virtual environment where the required Python packages can be installed.
 
@@ -23,8 +23,21 @@ $ git clone https://github.com/KhMustafa/Risk-aware-contingency-planning-with-mu
 ```
 pip install -r requirements.txt
 ```
+
+## Usage
 * To run the contingency planner, execute the following command from the root directory
 ```
 python planner/Frenet/frenet_planner.py
+```
+
+## Cite
+If relevant, consider citing:
+```
+@ARTICLE{mustafa2024racp,
+author={Mustafa, Khaled and Jarne Ornia, Daniel and Kober, Jens and Alonso-Mora, Javier},
+journal={IEEE Transactions on Intelligent Vehicles}, 
+title={RACP: Risk-Aware Contingency Planning with Multi-Modal Predictions}, 
+year={2024},
+keywords={Planning under uncertainty; risk-awareness; autonomous vehicles; contingency planning; multi-modality}
 ```
 
